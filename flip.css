@@ -29,17 +29,35 @@ body {
     cursor: pointer;
 }
 
+.card-back {
+    -webkit-transform: perspective(1000) rotateY(0);
+    -moz-transform: perspective(1000) rotateY(0);
+    -ms-transform: perspective(1000) rotateY(0);
+    -o-transform: perspective(1000) rotateY(0);
+    transform: perspective(1000) rotateY(0);
+    z-index: 900;
+}
+
+.card-front {
+    -webkit-transform: rotateY(-180deg);
+    -moz-transform: rotateY(-180deg);
+    -ms-transform: rotateY(-180deg);
+    -o-transform: rotateY(-180deg);
+    transform: rotateY(-180deg);
+    z-index: 800;
+}
+
 .flipFront .card-back {
     -webkit-transform: rotateY(180deg);
     -moz-transform: rotateY(180deg);
     -ms-transform: rotateY(180deg);
     -o-transform: rotateY(180deg);
     transform: rotateY(180deg);
-    -webkit-transform: perspective(1000) rotateY(180deg);
-    -moz-transform: perspective(1000) rotateY(180deg);
-    -ms-transform: perspective(1000) rotateY(180deg);
-    -o-transform: perspective(1000) rotateY(180deg);
-    transform: perspective(1000) rotateY(180deg);
+    -webkit-transform: perspective(1000) rotateY(-180deg);
+    -moz-transform: perspective(1000) rotateY(-180deg);
+    -ms-transform: perspective(1000) rotateY(-180deg);
+    -o-transform: perspective(1000) rotateY(-180deg);
+    transform: perspective(1000) rotateY(-180deg);
 }
 
 .flipFront .card-front {
@@ -63,33 +81,15 @@ body {
     -ms-backface-visibility: hidden;
     -o-backface-visibility: hidden;
     backface-visibility: hidden;
-    -webkit-transition: -webkit-transform 0.6s;
-    -moz-transition: -moz-transform 0.6s;
-    -o-transition: -o-transform 0.6s;
+    -webkit-transition: -webkit-transform 1.2s;
+    -moz-transition: -moz-transform 1.2s;
+    -o-transition: -o-transform 1.2s;
     transition: transform 1.2s;
     display: block;
     height: 100%;
     position: absolute;
     width: 100%;
     text-align: center;
-}
-
-.card-back {
-    -webkit-transform: perspective(1000) rotateY(0);
-    -moz-transform: perspective(1000) rotateY(0);
-    -ms-transform: perspective(1000) rotateY(0);
-    -o-transform: perspective(1000) rotateY(0);
-    transform: perspective(1000) rotateY(0);
-    z-index: 900;
-}
-
-.card-front {
-    -webkit-transform: rotateY(-180deg);
-    -moz-transform: rotateY(-180deg);
-    -ms-transform: rotateY(-180deg);
-    -o-transform: rotateY(-180deg);
-    transform: rotateY(-180deg);
-    z-index: 800;
 }
 
 .butR {
@@ -128,7 +128,8 @@ body {
 }
 
 .selectBox {
-    margin-inline: 30%;
+    /* margin-inline: 30%; */
+    width: 100%;
     margin-block: 3rem;
 }
 

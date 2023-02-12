@@ -83,14 +83,14 @@
 
         // [2023-02-11-DA] reset all cards
         function reset() {
-            var s = document.querySelector("#tarotDecks").value, cards = document.querySelectorAll(".flipFront");
+            let s = document.querySelector("#tarotDecks").value, cards = document.querySelectorAll(".flipFront");
             if (s == "") s = "gothic";
             // [2023-02-11-DA] reset set of decks
             decks = set[s];
             // [2023-02-11-DA] reset all choose cards 
             for (var i = 0, card; (card = cards[i]); i++) {
-                card.querySelector(".card-front").innerHTML = "";
                 card.classList.replace("flipFront", "flip");
+                setTimeout(function () {card.querySelector(".card-front").innerHTML = "";}, 1000);
             }
         }
 
