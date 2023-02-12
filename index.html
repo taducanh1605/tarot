@@ -9,8 +9,8 @@
 
 <body>
     <div id="upper" class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4">
+        <div class="col-sm-5"></div>
+        <div class="col-sm-2">
             <div class="selectBox">
                 <select name="tarotDecks" id="tarotDecks">
                     <option disabled value="">--Please choose your set--</option>
@@ -18,7 +18,7 @@
                 </select>
             </div>
         </div>
-        <div class="col-sm-4"></div>
+        <div class="col-sm-5"></div>
     </div>
 
     <div class="row table-spread">
@@ -65,7 +65,7 @@
             if (isC) {
                 getCard(that);
                 let t = that;
-                setTimeout(function () {t.classList.replace(state[0], state[1])}, 300);
+                setTimeout(function () {t.classList.replace(state[0], state[1])}, 100);
             }
         }
 
