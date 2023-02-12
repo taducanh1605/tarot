@@ -2,6 +2,7 @@ body {
     width: 97%;
     height: 97%;
     background-image: url('./gothic/background.jpg');
+    overflow: hidden;
 }
 
 .table-spread {
@@ -15,8 +16,10 @@ body {
 }
 
 .flip, .flipFront {
-    width: 29rem;
-    height: 50rem;
+    /* width: 29rem;
+    height: 50rem; */
+    width: 99%;
+    height: 99%;
     position: relative;
     padding: 0;
     margin: auto;
@@ -68,7 +71,7 @@ body {
     height: 100%;
     position: absolute;
     width: 100%;
-    /* background-color: beige; */
+    text-align: center;
 }
 
 .card-back {
@@ -89,18 +92,28 @@ body {
     z-index: 800;
 }
 
+.butR {
+    text-align: center;
+}
 .butReset {
     cursor: pointer;
-    border: 3px solid rgb(168, 68, 68);
     border-radius: 5px;
-    width: 7rem;
-    height: 3rem;
     padding: 3px 0 0 0;
-    color: rgb(168, 68, 68);
-    background-color: #121111;
+
+    border: 3px solid rgb(168, 68, 68);
+    background-color: rgb(168, 68, 68);
+    color: #121111;
+
     text-align: center;
     margin-inline: auto;
-    margin-block: 3rem;  
+    margin-block: 3rem;
+    padding: 0 10px 0 10px;
+    font-size: calc(14px + (20 - 14) * ((100vw - 300px) / (1200 - 300)));
+}
+.butReset:hover {
+    border: 3px solid rgb(168, 68, 68);
+    color: rgb(168, 68, 68);
+    background-color: #121111;
 }
 
 .deck {
@@ -108,12 +121,6 @@ body {
     max-height: 100%;
     border: 3px solid #492c2c;
     border-radius: 5px;
-}
-
-.butReset:hover {
-    border: 3px solid rgb(168, 68, 68);
-    background-color: rgb(168, 68, 68);
-    color: #121111;
 }
 
 .selectBox {
@@ -129,4 +136,5 @@ body {
     text-align: center;
     background-color: #121111;
     color: rgb(168, 68, 68);
+    font-size: calc(14px + (20 - 14) * ((100vw - 300px) / (1200 - 300)));
 }

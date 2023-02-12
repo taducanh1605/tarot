@@ -35,8 +35,8 @@
     <div class="row">
         <div class="col-sm-4"></div>
 
-        <div class="col-sm-4">
-            <div class="butReset" onClick="reset()">RESET</div>
+        <div class="col-sm-4 butR">
+            <button type="button" class="butReset" onClick="reset()">RESET</button>
         </div>
         
         <div class="col-sm-4"></div>
@@ -64,7 +64,8 @@
             var state = ['flip', 'flipFront'], isC = that.classList.contains('flip');
             if (isC) {
                 getCard(that);
-                that.classList.replace(state[0], state[1]);
+                let t = that;
+                setTimeout(function () {t.classList.replace(state[0], state[1])});
             }
         }
 
@@ -89,7 +90,7 @@
             // [2023-02-11-DA] reset all choose cards 
             for (var i = 0, card; (card = cards[i]); i++) {
                 card.querySelector(".card-front").innerHTML = "";
-                setTimeout(function () {card.classList.replace("flipFront", "flip");}, 300);
+                card.classList.replace("flipFront", "flip");
             }
         }
 
