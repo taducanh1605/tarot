@@ -89,7 +89,7 @@
             // [2023-02-11-DA] reset all choose cards 
             for (var i = 0, card; (card = cards[i]); i++) {
                 card.querySelector(".card-front").innerHTML = "";
-                card.classList.replace("flipFront", "flip");
+                setTimeout(function () {card.classList.replace("flipFront", "flip");}, 300);
             }
         }
 
