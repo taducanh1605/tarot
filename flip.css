@@ -1,0 +1,132 @@
+body {
+    width: 97%;
+    height: 97%;
+    background-image: url('./gothic/background.jpg');
+}
+
+.table-spread {
+    height: 70vh;
+}
+.spread {
+    width: 99%;
+    height: 99%;
+    margin-block: auto;
+    /* padding-top: 3rem; */
+}
+
+.flip, .flipFront {
+    width: 29rem;
+    height: 50rem;
+    position: relative;
+    padding: 0;
+    margin: auto;
+}
+
+.flipFront {
+    cursor: pointer;
+}
+
+.flipFront .card-back {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -ms-transform: rotateY(180deg);
+    -o-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+    -webkit-transform: perspective(1000) rotateY(180deg);
+    -moz-transform: perspective(1000) rotateY(180deg);
+    -ms-transform: perspective(1000) rotateY(180deg);
+    -o-transform: perspective(1000) rotateY(180deg);
+    transform: perspective(1000) rotateY(180deg);
+}
+
+.flipFront .card-front {
+    z-index: 950;
+    -webkit-transform: rotateY(0deg);
+    -moz-transform: rotateY(0deg);
+    -ms-transform: rotateY(0deg);
+    -o-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+    -webkit-transform: perspective(1000) rotateY(0deg);
+    -moz-transform: perspective(1000) rotateY(0deg);
+    -ms-transform: perspective(1000) rotateY(0deg);
+    -o-transform: perspective(1000) rotateY(0deg);
+    transform: perspective(1000) rotateY(0deg);
+}
+
+.card-back,
+.card-front {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    -o-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transition: -webkit-transform 0.6s;
+    -moz-transition: -moz-transform 0.6s;
+    -o-transition: -o-transform 0.6s;
+    transition: transform 0.6s;
+    display: block;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    /* background-color: beige; */
+}
+
+.card-back {
+    -webkit-transform: perspective(1000) rotateY(0);
+    -moz-transform: perspective(1000) rotateY(0);
+    -ms-transform: perspective(1000) rotateY(0);
+    -o-transform: perspective(1000) rotateY(0);
+    transform: perspective(1000) rotateY(0);
+    z-index: 900;
+}
+
+.card-front {
+    -webkit-transform: rotateY(-180deg);
+    -moz-transform: rotateY(-180deg);
+    -ms-transform: rotateY(-180deg);
+    -o-transform: rotateY(-180deg);
+    transform: rotateY(-180deg);
+    z-index: 800;
+}
+
+.butReset {
+    cursor: pointer;
+    border: 3px solid rgb(168, 68, 68);
+    border-radius: 5px;
+    width: 7rem;
+    height: 3rem;
+    padding: 3px 0 0 0;
+    color: rgb(168, 68, 68);
+    background-color: #121111;
+    text-align: center;
+    margin-inline: auto;
+    margin-block: 3rem;  
+}
+
+.deck {
+    max-width: 100%;
+    max-height: 100%;
+    border: 3px solid #492c2c;
+    border-radius: 5px;
+}
+
+.butReset:hover {
+    border: 3px solid rgb(168, 68, 68);
+    background-color: rgb(168, 68, 68);
+    color: #121111;
+}
+
+.selectBox {
+    margin-inline: 30%;
+    margin-block: 3rem;
+}
+
+.selectBox select {
+    width: 100%;
+    border: 3px solid #492c2c;
+    border-radius: 7px;
+    padding: 5px 0 4px 0;
+    text-align: center;
+    background-color: #121111;
+    color: rgb(168, 68, 68);
+}
