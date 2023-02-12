@@ -6,11 +6,11 @@ body {
 }
 
 .table-spread {
-    height: 70vh;
+    /* height: 70vh; */
 }
 .spread {
     width: 99%;
-    height: 99%;
+    height: 70vh;
     margin-block: auto;
     /* padding-top: 3rem; */
 }
@@ -97,7 +97,7 @@ body {
 }
 .butReset {
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 7px;
     padding: 3px 0 0 0;
 
     border: 3px solid rgb(168, 68, 68);
@@ -108,7 +108,10 @@ body {
     margin-inline: auto;
     margin-block: 3rem;
     padding: 0 10px 0 10px;
-    font-size: calc(14px + (20 - 14) * ((100vw - 300px) / (1200 - 300)));
+    font-size: calc(28px + (40 - 28) * ((100vw - 300px) / (1200 - 300)));
+
+    min-height: 7vh;
+    min-width: 24vw;
 }
 .butReset:hover {
     border: 3px solid rgb(168, 68, 68);
@@ -119,6 +122,7 @@ body {
 .deck {
     max-width: 100%;
     max-height: 100%;
+    min-height: 99%;
     border: 3px solid #492c2c;
     border-radius: 5px;
 }
