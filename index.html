@@ -67,6 +67,7 @@
             if (isC) {
                 getCard(that);
                 that.classList.replace(state[0], state[1]);
+                setTimeout(function () {that.querySelector('.card-back').style.display = 'none';}, 500);
             }
         }
 
@@ -90,9 +91,10 @@
             if (s == "") s = "gothic";
             window.decks = set[s];
             // [2023-02-11-DA] reset all choose cards 
-            for (var i = 0, card; (card = cards[i]); i++) {
-                card.classList.replace("flipFront", "flip");
+            for (let i = 0, card; (card = cards[i]); i++) {
+                card.querySelector('.card-back').style.display = null;
                 // setTimeout(function () {card.querySelector(".card-front").innerHTML = "";}, 1000);
+                setTimeout(function () {card.classList.replace("flipFront", "flip");}, 100);
                 card.querySelector(".card-front").querySelectorAll(".deck").forEach(function(ele) {setTimeout(function () {ele.style.display = "none";}, 500)});
             }
         }
