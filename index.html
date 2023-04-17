@@ -91,6 +91,7 @@
             if (s == "") s = "gothic";
             window.decks = set[s];
             // [2023-02-11-DA] reset all choose cards 
+            document.querySelectorAll(".flip").forEach(function(ele) {ele.querySelector('.card-back').style.display = null});
             for (let i = 0, card; (card = cards[i]); i++) {
                 card.querySelector('.card-back').style.display = null;
                 // setTimeout(function () {card.querySelector(".card-front").innerHTML = "";}, 1000);
