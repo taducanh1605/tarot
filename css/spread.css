@@ -1,0 +1,26 @@
+body {
+    width: 97%;
+    height: 97%;
+    overflow: hidden;
+}
+
+.spread {
+    width: 99%;
+    height: 70vh;
+    margin-block: auto;
+    /* padding-top: 3rem; */
+}
+
+.selectBox {
+    /* margin-inline: 30%; */
+    width: 100%;
+    margin-block: 3rem;
+}
+
+.table-spread {
+    /* height: 70vh; */
+}
+
+.butR {
+    text-align: center;
+}
