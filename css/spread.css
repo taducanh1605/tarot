@@ -29,12 +29,13 @@ body {
 
 .selectBox {
     /* width: 100%; */
-    margin-block: 2vh;
+    margin-top: 1vh;
+    margin-bottom: 2vh;
     min-width: 99%;
 }
 
 #upper {
-    max-height: 13vh;
+    /* max-height: 13vh; */
 }
 
 .selectBox select {
@@ -52,11 +53,13 @@ body {
     height: 70vh;
     width: 99vw;
     text-align: center;
-    margin-top: 4vh;
+    margin-block: 1vh;
+    margin-inline: auto;
 }
 
 .butR {
     text-align: center;
+    margin-inline: auto;
 }
 
 .butReset {
@@ -66,7 +69,6 @@ body {
 
     text-align: center;
     margin-inline: auto;
-    margin-block: 3vh;
     padding: 0 10px 0 10px;
     font-size: calc(3vh + (40 - 28) * ((100vw - 300px) / (1200 - 300)));
 
