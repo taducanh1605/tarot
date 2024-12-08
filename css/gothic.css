@@ -6,22 +6,9 @@
 }
 
 .butReset {
-    cursor: pointer;
-    border-radius: 7px;
-    padding: 3px 0 0 0;
-
     border: 3px solid rgb(168, 68, 68);
     background-color: rgb(168, 68, 68);
     color: #121111;
-
-    text-align: center;
-    margin-inline: auto;
-    margin-block: 3rem;
-    padding: 0 10px 0 10px;
-    font-size: calc(3vh + (40 - 28) * ((100vw - 300px) / (1200 - 300)));
-
-    min-height: 5vh;
-    min-width: 24vw;
 }
 .butReset:hover {
     border: 3px solid rgb(168, 68, 68);
@@ -30,8 +17,8 @@
 }
 
 .card {
-    border: 3px solid #492c2c;
-    border-radius: 5px;
+    /* border: 3px solid #492c2c;
+    border-radius: 5px; */
 }
 
 .selectBox select {

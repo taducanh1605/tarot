@@ -128,7 +128,7 @@ function getCard(that) {
     window.decks = shuffle(window.decks);
     var nbrDecks = window.decks.length, pos = pickN(nbrDecks), deck = window.decks[pos] + "", rev = pickN(2), $card = that.querySelector(".card-front");
     window.decks = window.decks.slice(0,pos).concat(window.decks.slice(pos+1));
-    $card.querySelector(`#${deck.split('.')[0]}`).style.transform = (rev) ? "scaleY(-1) scaleX(-1)" : "";
+    $card.querySelector(`#${deck.split('.')[0]}`).style.transform = (rev) ? "scaleY(-1) scaleX(-1) translate(50%, 50%)" : "";
     $card.querySelector(`#${deck.split('.')[0]}`).style.display = '';
     // $card.innerHTML = `<img class="card" src="./${s}/${deck}" style="${(rev) ? "transform: scaleY(-1) scaleX(-1);" : ""}">`;
 }
@@ -198,7 +198,7 @@ function chooseSet(n) {
 function buildSpread(spread) {
     // [2024-12-08-DA] calculate size and position
     let row_len = spread.length, col_len = spread[0].length;
-    let h = `${(70 / row_len).toFixed(2)}vh`, w = `${(99 / col_len).toFixed(2)}vw`;
+    let h = `${(70 / row_len).toFixed(2) - 0.02}vh`, w = `${(99 / col_len).toFixed(2) - 0.02}vw`;
 
     // [2024-12-08-DA] clear spread
     let $spread = document.querySelector(".table-spread");

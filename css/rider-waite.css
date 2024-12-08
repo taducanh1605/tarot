@@ -6,22 +6,9 @@
 }
 
 .butReset {
-    cursor: pointer;
-    border-radius: 7px;
-    padding: 3px 0 0 0;
-
     /* border: 3px solid rgb(217, 226, 113); */
     background-color: rgb(76, 72, 78);
     color: #2abbf3;
-
-    text-align: center;
-    margin-inline: auto;
-    margin-block: 3rem;
-    padding: 0 10px 0 10px;
-    font-size: calc(3vh + (40 - 28) * ((100vw - 300px) / (1200 - 300)));
-
-    min-height: 5vh;
-    min-width: 24vw;
 }
 .butReset:hover {
     /* border: 3px solid rgb(168, 68, 68); */
@@ -30,14 +17,12 @@
 }
 
 .deck {
-    max-width: 100%;
+    /* max-width: 100%;
     max-height: 100%;
     min-height: 99%;
-    /* border: 3px solid rgb(113, 217, 226); */
-    border-radius: 5px;
+    border: 3px solid rgb(113, 217, 226);
+    border-radius: 5px; */
 }
-
-
 
 .selectBox select {
     background-color: rgb(76, 72, 78);
