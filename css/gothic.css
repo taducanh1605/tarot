@@ -35,12 +35,6 @@
 }
 
 .selectBox select {
-    width: 100%;
-    /* border: 3px solid #492c2c; */
-    border-radius: 7px;
-    padding: 5px 0 4px 0;
-    text-align: center;
     background-color: #121111;
     color: rgb(168, 68, 68);
-    font-size: calc(3vh + (20 - 14) * ((100vw - 300px) / (1200 - 300)));
 }

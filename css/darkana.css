@@ -38,12 +38,6 @@
 }
 
 .selectBox select {
-    width: 100%;
-    /* border: 3px solid rgb(76, 74, 74); */
-    border-radius: 7px;
-    padding: 5px 0 4px 0;
-    text-align: center;
     background-color: #6f6f6f;
-    color: rgb(17, 17, 17);;
-    font-size: calc(3vh + (20 - 14) * ((100vw - 300px) / (1200 - 300)));
+    color: rgb(17, 17, 17);
 }

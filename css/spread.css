@@ -21,10 +21,19 @@ body {
 }
 
 .selectBox {
-    /* margin-inline: 30%; */
+    margin-inline: 3rem;
     /* width: 100%; */
     margin-block: 3rem;
-    min-width: 100%;
+    min-width: 99%;
+}
+
+.selectBox select {
+    width: 90%;
+    /* border: 3px solid rgb(76, 74, 74); */
+    border-radius: 7px;
+    padding: 5px 0 4px 0;
+    text-align: center;
+    font-size: calc(3vh + (20 - 14) * ((100vw - 300px) / (1200 - 300)));
 }
 
 .table-spread {
