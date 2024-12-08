@@ -68,10 +68,11 @@
     -moz-transition: -moz-transform 1.2s;
     -o-transition: -o-transform 1.2s;
     transition: transform 1.2s;
-    display: block;
     height: 100%;
     position: absolute;
     width: 100%;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
