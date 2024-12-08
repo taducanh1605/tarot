@@ -220,7 +220,7 @@ function chooseSet(n) {
 function buildSpread(spread) {
     // [2024-12-08-DA] calculate size and position
     let row_len = spread.length, col_len = spread[0].length;
-    let h = `${(70 / row_len).toFixed(2) - 0.02}vh`, w = `${(99 / col_len).toFixed(2) - 0.02}vw`;
+    let h = `${(60 / row_len).toFixed(2) - 0.02}vh`, w = `${(99 / col_len).toFixed(2) - 0.02}vw`;
 
     // [2024-12-08-DA] clear spread
     let $spread = document.querySelector(".table-spread");
