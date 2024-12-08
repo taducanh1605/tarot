@@ -34,6 +34,20 @@ document.addEventListener("DOMContentLoaded", async function(event) {
         console.error(`Failed to activate Wake Lock: ${err.message}`);
     }
 
+    // [2024-12-08-DA] set event for button reset
+    document.querySelector("button.butReset").addEventListener('click', function() {
+        if (window.delayReset) {
+            window.clearTimeout(window.delayReset); 
+            delete window.delayReset;
+            reset();
+            return;
+        }
+        window.delayReset = setTimeout(function() {
+            reset_check();
+            delete window.delayReset;
+        }, 500); 
+    });
+
     // [2024-12-08-DA] load options for set and spread
     let sel_set = document.querySelector("#tarotDecks");
     for (let i = 0; i < Object.keys(set).length; i++) {
@@ -132,6 +146,20 @@ function pickN(max) { return Math.floor(Math.random() * max); }
 
 // [2023-02-11-DA] reset all cards
 function reset() {
+    let s = document.querySelector("#tarotDecks").value, cards = document.querySelectorAll(".flipFront");
+    if (s == "") s = "gothic";
+    window.decks = set[s];
+    // [2023-02-11-DA] reset all choose cards 
+    document.querySelectorAll(".flip").forEach(function(ele) {ele.querySelector('.card-back').style.display = null});
+    for (let i = 0, card; (card = cards[i]); i++) {
+        card.querySelector('.card-back').style.display = null;
+        // setTimeout(function () {card.querySelector(".card-front").innerHTML = "";}, 1000);
+        setTimeout(function () {card.classList.replace("flipFront", "flip");}, 100);
+        card.querySelector(".card-front").querySelectorAll(".card").forEach(function(ele) {setTimeout(function () {ele.style.display = "none";}, 500)});
+    }
+}
+function reset_check() {
+    if (!confirm("Do you want to reset all cards?")) return; 
     let s = document.querySelector("#tarotDecks").value, cards = document.querySelectorAll(".flipFront");
     if (s == "") s = "gothic";
     window.decks = set[s];
