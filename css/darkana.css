@@ -1,5 +1,8 @@
 .bgr {
     background-image: url('../images/darkana/background.jpg');
+    background-size: cover;                /* Ensures the image covers the whole page */
+    background-repeat: no-repeat;          /* Prevents the image from repeating */
+    background-position: center center;    /* Centers the image horizontally and vertically */
 }
 
 .butReset {
