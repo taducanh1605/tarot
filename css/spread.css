@@ -73,4 +73,6 @@ body {
     min-height: 5vh;
     max-height: 8vh;
     min-width: 24vw;
+
+    touch-action: manipulation;
 }
