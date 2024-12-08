@@ -130,7 +130,7 @@ function getCard(that) {
     window.decks = window.decks.slice(0,pos).concat(window.decks.slice(pos+1));
     $card.querySelector(`#${deck.split('.')[0]}`).style.transform = (rev) ? "scaleY(-1) scaleX(-1)" : "";
     $card.querySelector(`#${deck.split('.')[0]}`).style.display = '';
-    // $card.innerHTML = `<img class="deck" src="./${s}/${deck}" style="${(rev) ? "transform: scaleY(-1) scaleX(-1);" : ""}">`;
+    // $card.innerHTML = `<img class="card" src="./${s}/${deck}" style="${(rev) ? "transform: scaleY(-1) scaleX(-1);" : ""}">`;
 }
 
 // [2024-12-07-DA] pick random
@@ -147,7 +147,7 @@ function reset() {
         card.querySelector('.card-back').style.display = null;
         // setTimeout(function () {card.querySelector(".card-front").innerHTML = "";}, 1000);
         setTimeout(function () {card.classList.replace("flipFront", "flip");}, 100);
-        card.querySelector(".card-front").querySelectorAll(".deck").forEach(function(ele) {setTimeout(function () {ele.style.display = "none";}, 500)});
+        card.querySelector(".card-front").querySelectorAll(".card").forEach(function(ele) {setTimeout(function () {ele.style.display = "none";}, 500)});
     }
 }
 
