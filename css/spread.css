@@ -78,4 +78,5 @@ body {
     min-width: 24vw;
 
     touch-action: manipulation;
+    z-index: 99999;
 }
