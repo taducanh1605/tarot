@@ -26,7 +26,13 @@ var spreads = {
 }
 
 // [2024-12-07-DA] init
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener("DOMContentLoaded", async function(event) {
+    // activer Wake Lock
+    try {
+        await navigator.wakeLock.request('screen');
+    } catch (err) {
+        console.error(`Failed to activate Wake Lock: ${err.message}`);
+    }
 
     // [2024-12-08-DA] load options for set and spread
     let sel_set = document.querySelector("#tarotDecks");
