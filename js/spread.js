@@ -88,9 +88,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     // [2024-12-07-DA] load selected set in localstorage
     let sp = document.querySelector("#spreads").value;
-    if (!localStorage.getItem("spread")) localStorage.setItem('spread', s);
+    if (!localStorage.getItem("spread")) localStorage.setItem('spread', sp);
     else {
-        s = localStorage.getItem('spread');
+        sp = localStorage.getItem('spread');
         document.querySelector("#spreads").value = sp;
     }
 
@@ -98,18 +98,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     document.querySelector("#spreads").dispatchEvent(eventChange);
 
 });
-
-// var gothic = {
-//     0: {
-//         0: ["0. The Fool", "1. The Magician", "2. The High Priestess", "3. The Empress", "4. The Emperor", "5. The Hierophant", "6. The Lovers", "7. The Chariot", "8. Justice", "9. The Hermit", "10. Wheel of Fortune", "11. Strength", "12. The Hanged Man", "13. Death", "14. Temperance", "15. The Devil", "16. The Tower", "17. The Star", "18. The Moon", "19. The Sun", "20. Judgement", "21. The World"]
-//     },
-//     1: {
-//         0: ["Ace Wand", "Two Wands", "Three Wands", "Four Wands", "Five Wands", "Six Wands", " Seven Wands", "Eight Wands", "Nine Wands", "Ten Wands", "Knave Wands", "Knight Wands", "Queen Wands", "King Wands"],
-//         1: ["Ace Sword", "Two Swords", "Three Swords", "Four Swords", "Five Swords", "Six Swords", " Seven Swords", "Eight Swords", "Nine Swords", "Ten Swords", "Knave Swords", "Knight Swords", "Queen Swords", "King Swords"],
-//         2: ["Ace Cup", "Two Cups", "Three Cups", "Four Cups", "Five Cups", "Six Cups", " Seven Cups", "Eight Cups", "Nine Cups", "Ten Cups", "Knave Cups", "Knight Cups", "Queen Cups", "King Cups"],
-//         3: ["Ace Pentacle", "Two Pentacles", "Three Pentacles", "Four Pentacles", "Five Pentacles", "Six Pentacles", " Seven Pentacles", "Eight Pentacles", "Nine Pentacles", "Ten Pentacles", "Knave Pentacles", "Knight Pentacles", "Queen Pentacles", "King Pentacles"],
-//     }
-// }
 
 // [2023-02-10-DA] click to flip card
 function flip(that) {
