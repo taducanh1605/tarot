@@ -39,11 +39,11 @@ document.addEventListener("DOMContentLoaded", async function(event) {
         if (window.delayReset) {
             window.clearTimeout(window.delayReset); 
             delete window.delayReset;
-            reset();
+            reset(false);
             return;
         }
         window.delayReset = setTimeout(function() {
-            reset_check();
+            reset(true);
             delete window.delayReset;
         }, 500); 
     });
@@ -131,21 +131,38 @@ function flip(that) {
 
 // [2023-02-12-DA] pick a card and delete this card from array
 function getCard(that) {
-    // var s = document.querySelector("#tarotDecks").value;
     // [2023-02-11-DA] mix decks
     window.decks = shuffle(window.decks);
     var nbrDecks = window.decks.length, pos = pickN(nbrDecks), deck = window.decks[pos] + "", rev = pickN(2), $card = that.querySelector(".card-front");
     window.decks = window.decks.slice(0,pos).concat(window.decks.slice(pos+1));
-    $card.querySelector(`#${deck.split('.')[0]}`).style.transform = (rev) ? "scaleY(-1) scaleX(-1) translate(50%, 50%)" : "";
-    $card.querySelector(`#${deck.split('.')[0]}`).style.display = '';
-    // $card.innerHTML = `<img class="card" src="./${s}/${deck}" style="${(rev) ? "transform: scaleY(-1) scaleX(-1);" : ""}">`;
+
+    // [2024-12-09-DA] Load image from IndexedDB or fetch if not available
+    loadImageFromDB(`${localStorage.getItem("set")}/${deck}`, function(src) {
+        let img = document.createElement('img');
+        img.className = 'card';
+        img.id = `${deck.split('.')[0]}`;
+        img.style.transform = (rev) ? "scaleY(-1) scaleX(-1) translate(50%, 50%)" : "";
+        img.style.display = '';
+
+        if (src) {
+            img.src = src;
+        } else {
+            img.src = `images/${localStorage.getItem("set")}/${deck}`;
+            img.onload = function() {
+                saveImageToDB(`${localStorage.getItem("set")}/${deck}`, img.src);
+            };
+        }
+
+        $card.appendChild(img);
+    });
 }
 
 // [2024-12-07-DA] pick random
 function pickN(max) { return Math.floor(Math.random() * max); }
 
 // [2023-02-11-DA] reset all cards
-function reset() {
+function reset(check) {
+    if (check && !confirm("Do you want to reset all cards?")) return;
     let s = document.querySelector("#tarotDecks").value, cards = document.querySelectorAll(".flipFront");
     if (s == "") s = "gothic";
     window.decks = set[s];
@@ -153,23 +170,13 @@ function reset() {
     document.querySelectorAll(".flip").forEach(function(ele) {ele.querySelector('.card-back').style.display = null});
     for (let i = 0, card; (card = cards[i]); i++) {
         card.querySelector('.card-back').style.display = null;
-        // setTimeout(function () {card.querySelector(".card-front").innerHTML = "";}, 1000);
-        setTimeout(function () {card.classList.replace("flipFront", "flip");}, 100);
-        card.querySelector(".card-front").querySelectorAll(".card").forEach(function(ele) {setTimeout(function () {ele.style.display = "none";}, 500)});
-    }
-}
-function reset_check() {
-    if (!confirm("Do you want to reset all cards?")) return; 
-    let s = document.querySelector("#tarotDecks").value, cards = document.querySelectorAll(".flipFront");
-    if (s == "") s = "gothic";
-    window.decks = set[s];
-    // [2023-02-11-DA] reset all choose cards 
-    document.querySelectorAll(".flip").forEach(function(ele) {ele.querySelector('.card-back').style.display = null});
-    for (let i = 0, card; (card = cards[i]); i++) {
-        card.querySelector('.card-back').style.display = null;
-        // setTimeout(function () {card.querySelector(".card-front").innerHTML = "";}, 1000);
-        setTimeout(function () {card.classList.replace("flipFront", "flip");}, 100);
-        card.querySelector(".card-front").querySelectorAll(".card").forEach(function(ele) {setTimeout(function () {ele.style.display = "none";}, 500)});
+        setTimeout(function () {
+            card.classList.replace("flipFront", "flip");
+            // [2024-12-09-DA] clear card-front content after flipping with delay
+            setTimeout(function() {
+                card.querySelector('.card-front').innerHTML = '';
+            }, 300); // Adjust the delay as needed
+        }, 100);
     }
 }
 
@@ -203,17 +210,28 @@ function chooseSet(n) {
     for (let c = 0; c < $cards.length; c++) {
         var $card = $cards[c];
         $card.innerHTML = '';
-        for (var i = 0, l = window.decks.length; i<l; i++ ) {
-            var img = document.createElement('img');
+        for (let i = 0; i < window.decks.length; i++) {
+            let img = document.createElement('img');
             img.className = 'card';
-            img.src = `images/${name}/${window.decks[i]}`;
             img.id = `${window.decks[i].split('.')[0]}`;
             img.style.display = 'none';
-            $card.appendChild(img);
+
+            // [2024-12-09-DA] Load image from IndexedDB or fetch if not available
+            loadImageFromDB(`${name}/${window.decks[i]}`, function(src) {
+                if (src) {
+                    img.src = src;
+                } else {
+                    img.src = `images/${name}/${window.decks[i]}`;
+                    img.onload = function() {
+                        saveImageToDB(`${name}/${window.decks[i]}`, img.src);
+                    };
+                }
+                $card.appendChild(img);
+            });
         }
     }
 
-    reset();
+    reset(false);
 }
 
 // [2024-12-07-DA] make spread from [posx, posy]
@@ -273,3 +291,60 @@ var lib = function (s) {
     for (let i = 0; i < tmp.length; i++) tmp[i] = tmp[i].charAt(0).toUpperCase() + tmp[i].slice(1);
     return tmp.join(' ');
 };
+
+// [2024-12-09-DA] Initialize IndexedDB
+let db;
+const request = indexedDB.open("TarotDB", 1);
+
+request.onupgradeneeded = function(event) {
+    db = event.target.result;
+    const objectStore = db.createObjectStore("images", { keyPath: "id" });
+};
+
+request.onsuccess = function(event) {
+    db = event.target.result;
+    // [2024-12-09-DA] Load set and spread after DB is initialized
+    document.querySelector("#tarotDecks").dispatchEvent(new Event('change'));
+    document.querySelector("#spreads").dispatchEvent(new Event('change'));
+};
+
+request.onerror = function(event) {
+    console.error("Database error: " + event.target.errorCode);
+};
+
+// [2024-12-09-DA] Save image to IndexedDB
+function saveImageToDB(id, src) {
+    if (!db) return;
+    const transaction = db.transaction(["images"], "readwrite");
+    const objectStore = transaction.objectStore("images");
+    const request = objectStore.put({ id: id, src: src });
+
+    request.onsuccess = function(event) {
+        console.log("Image saved to DB: " + id);
+    };
+
+    request.onerror = function(event) {
+        console.error("Error saving image to DB: " + event.target.errorCode);
+    };
+}
+
+// [2024-12-09-DA] Load image from IndexedDB
+function loadImageFromDB(id, callback) {
+    if (!db) return callback(null);
+    const transaction = db.transaction(["images"]);
+    const objectStore = transaction.objectStore("images");
+    const request = objectStore.get(id);
+
+    request.onsuccess = function(event) {
+        if (request.result) {
+            callback(request.result.src);
+        } else {
+            callback(null);
+        }
+    };
+
+    request.onerror = function(event) {
+        console.error("Error loading image from DB: " + event.target.errorCode);
+        callback(null);
+    };
+}
