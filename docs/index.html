@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#121111">
+    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href='css/flip.css'>
     <link rel="stylesheet" href='css/spread.css'>
 
@@ -9,9 +11,23 @@
     <link rel="stylesheet" href='css/rider-waite.css' id="theme">
     <link rel="stylesheet" href='css/darkana.css' id="theme">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="icon" href="images/gothic/icon.ico" type="image/x-icon">
+    <!-- Bootstrap bundled locally so the app works offline -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="icon" href="images/gothic/icon.png" type="image/png">
     <script src="js/spread.js"></script>
+
+    <script>
+        // Register service worker for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('./sw.js').then(function(reg) {
+                    console.log('[SW] Registered:', reg.scope);
+                }).catch(function(err) {
+                    console.warn('[SW] Registration failed:', err);
+                });
+            });
+        }
+    </script>
 </head>
 
 <body class="bgr">
