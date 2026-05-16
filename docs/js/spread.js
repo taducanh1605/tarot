@@ -208,7 +208,7 @@ function chooseSet(n) {
     // [2024-12-07-DA] reset front of card and load all cards
     var $cards = document.querySelectorAll(".card-front"), setDeck = '';
     for (let c = 0; c < $cards.length; c++) {
-        var $card = $cards[c];
+        let $card = $cards[c];
         $card.innerHTML = '';
         for (let i = 0; i < window.decks.length; i++) {
             let img = document.createElement('img');
@@ -303,9 +303,6 @@ request.onupgradeneeded = function(event) {
 
 request.onsuccess = function(event) {
     db = event.target.result;
-    // [2024-12-09-DA] Load set and spread after DB is initialized
-    document.querySelector("#tarotDecks").dispatchEvent(new Event('change'));
-    document.querySelector("#spreads").dispatchEvent(new Event('change'));
 };
 
 request.onerror = function(event) {
