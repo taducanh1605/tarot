@@ -2,11 +2,13 @@
 // Uses Cache-First strategy for all static assets and images
 // App shell is precached on install; images are cached on first request
 
-var CACHE_NAME = 'tarot-v1';
+var CACHE_NAME = 'tarot-v2';
 
-// App shell files to precache on install
+// App shell files to precache on install.
+// NOTE: Do NOT include './' (root/directory URL) here – on some hosts it
+// returns a redirect (opaque response) that cache.add() cannot store, which
+// would cause cache.addAll() to reject and abort the entire install.
 var APP_SHELL = [
-    './',
     './index.html',
     './manifest.json',
     './css/flip.css',
@@ -17,9 +19,6 @@ var APP_SHELL = [
     './css/bootstrap.min.css',
     './js/spread.js'
 ];
-
-// Precache all card images for all three decks so the app works fully offline
-// after the first visit (when the service worker installs and caches these files)
 
 var DECK_NAMES = ['gothic', 'rider-waite', 'darkana'];
 
@@ -34,60 +33,56 @@ var MAJOR_ARCANA = [
 
 var MINOR_SUITS = ['c', 'p', 's', 'w'];
 
-// Build all card filenames for a single deck
 function buildCardList(deckName) {
     var files = [
         './images/' + deckName + '/cardback.png',
         './images/' + deckName + '/background.jpg'
     ];
-
-    // Major Arcana
     for (var i = 0; i < MAJOR_ARCANA.length; i++) {
         files.push('./images/' + deckName + '/' + MAJOR_ARCANA[i]);
     }
-
-    // Minor Arcana (14 cards per suit)
     for (var s = 0; s < MINOR_SUITS.length; s++) {
         for (var n = 1; n <= 14; n++) {
             var num = n < 10 ? '0' + n : '' + n;
             files.push('./images/' + deckName + '/tarot_' + MINOR_SUITS[s] + num + '.png');
         }
     }
-
     return files;
 }
 
-// Collect all image files across all decks
 var IMAGE_FILES = [];
 for (var d = 0; d < DECK_NAMES.length; d++) {
     IMAGE_FILES = IMAGE_FILES.concat(buildCardList(DECK_NAMES[d]));
 }
-
-// Also include gothic extra images
 IMAGE_FILES.push('./images/gothic/icon.png');
-IMAGE_FILES.push('./images/gothic/home_air_title.png');
 
-// Install event: precache app shell and all images
+// Install event: cache app shell files individually (NOT via addAll so one
+// missing file cannot abort the entire install), then cache images in batches.
 self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(CACHE_NAME).then(function(cache) {
-            // Cache app shell immediately (required files)
-            return cache.addAll(APP_SHELL).then(function() {
-                // Cache images in smaller batches to avoid overwhelming the browser
-                // If any image fails to cache (e.g. file not found), skip it gracefully
+            // Cache each app-shell file individually so a single failure does
+            // not roll back everything.  Critical files (index.html, spread.js,
+            // CSS) should always be present; warn on any unexpected miss.
+            var shellPromises = APP_SHELL.map(function(url) {
+                return cache.add(url).catch(function(err) {
+                    console.warn('[SW] Failed to cache app-shell file: ' + url, err);
+                });
+            });
+
+            return Promise.all(shellPromises).then(function() {
+                // Cache images in batches; skip missing files gracefully
                 var batches = [];
                 var batchSize = 20;
                 for (var i = 0; i < IMAGE_FILES.length; i += batchSize) {
                     batches.push(IMAGE_FILES.slice(i, i + batchSize));
                 }
-
-                // Process batches sequentially
                 return batches.reduce(function(chain, batch) {
                     return chain.then(function() {
                         return Promise.all(
                             batch.map(function(url) {
                                 return cache.add(url).catch(function(err) {
-                                    console.warn('[SW] Failed to cache: ' + url, err);
+                                    console.warn('[SW] Failed to cache image: ' + url, err);
                                 });
                             })
                         );
@@ -95,13 +90,12 @@ self.addEventListener('install', function(event) {
                 }, Promise.resolve());
             });
         }).then(function() {
-            // Force the waiting service worker to become the active service worker
             return self.skipWaiting();
         })
     );
 });
 
-// Activate event: clean up old caches from previous versions
+// Activate event: clean up old caches
 self.addEventListener('activate', function(event) {
     event.waitUntil(
         caches.keys().then(function(cacheNames) {
@@ -114,36 +108,46 @@ self.addEventListener('activate', function(event) {
                 })
             );
         }).then(function() {
-            // Take control of all open clients immediately
             return self.clients.claim();
         })
     );
 });
 
 // Fetch event: Cache-First strategy
-// Serve from cache if available; otherwise fetch from network and cache the response
 self.addEventListener('fetch', function(event) {
-    // Only handle GET requests
     if (event.request.method !== 'GET') return;
 
     var url = new URL(event.request.url);
 
-    // Only cache http/https requests - chrome-extension:// and other schemes
-    // will throw "Request scheme unsupported" if passed to cache.put()
+    // Only handle http/https – chrome-extension:// etc. cannot be cached
     if (url.protocol !== 'https:' && url.protocol !== 'http:') return;
 
-    // Skip cross-origin requests (CDNs, analytics, etc.)
+    // Only handle same-origin requests
     if (url.origin !== self.location.origin) return;
 
+    // For navigation requests serve the cached index.html directly.
+    // This is the key offline-support path: navigating to the app root
+    // while offline must return the cached page, not a network error.
+    if (event.request.mode === 'navigate') {
+        event.respondWith(
+            caches.match(new Request('./index.html')).then(function(cached) {
+                if (cached) return cached;
+                // Not cached yet – fetch from network (first visit)
+                return fetch(event.request).catch(function() {
+                    return new Response('<h1>Offline</h1><p>Please visit once while online first.</p>',
+                        { headers: { 'Content-Type': 'text/html' } });
+                });
+            })
+        );
+        return;
+    }
+
+    // For all other requests: serve from cache, fall back to network and cache
     event.respondWith(
         caches.match(event.request).then(function(cachedResponse) {
-            if (cachedResponse) {
-                return cachedResponse;
-            }
+            if (cachedResponse) return cachedResponse;
 
-            // Not in cache: fetch from network and store in cache for next time
             return fetch(event.request).then(function(networkResponse) {
-                // Only cache successful responses
                 if (
                     networkResponse &&
                     networkResponse.status === 200 &&
@@ -156,14 +160,9 @@ self.addEventListener('fetch', function(event) {
                 }
                 return networkResponse;
             }).catch(function() {
-                // Network failed and not in cache
-                // For navigation requests, return the cached index.html as fallback
-                if (event.request.mode === 'navigate') {
-                    return caches.match('./index.html');
-                }
-                // For other requests, just fail silently
                 return new Response('', { status: 503, statusText: 'Service Unavailable' });
             });
         })
     );
 });
+
