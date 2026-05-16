@@ -123,11 +123,16 @@ self.addEventListener('activate', function(event) {
 // Fetch event: Cache-First strategy
 // Serve from cache if available; otherwise fetch from network and cache the response
 self.addEventListener('fetch', function(event) {
-    // Only handle GET requests to the same origin
+    // Only handle GET requests
     if (event.request.method !== 'GET') return;
 
-    // Skip requests to external origins (e.g. analytics)
     var url = new URL(event.request.url);
+
+    // Only cache http/https requests - chrome-extension:// and other schemes
+    // will throw "Request scheme unsupported" if passed to cache.put()
+    if (url.protocol !== 'https:' && url.protocol !== 'http:') return;
+
+    // Skip cross-origin requests (CDNs, analytics, etc.)
     if (url.origin !== self.location.origin) return;
 
     event.respondWith(

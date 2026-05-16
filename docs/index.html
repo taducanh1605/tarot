@@ -17,10 +17,21 @@
     <script src="js/spread.js"></script>
 
     <script>
-        // Register service worker for offline support
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
-                navigator.serviceWorker.register('./sw.js').then(function(reg) {
+                // Unregister any stale service workers (e.g. old service-worker.js)
+                // before registering the current one so they don't cause errors.
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    var unregisterOld = registrations
+                        .filter(function(reg) {
+                            return reg.active && reg.active.scriptURL &&
+                                !reg.active.scriptURL.endsWith('/sw.js');
+                        })
+                        .map(function(reg) { return reg.unregister(); });
+                    return Promise.all(unregisterOld);
+                }).then(function() {
+                    return navigator.serviceWorker.register('./sw.js');
+                }).then(function(reg) {
                     console.log('[SW] Registered:', reg.scope);
                 }).catch(function(err) {
                     console.warn('[SW] Registration failed:', err);
