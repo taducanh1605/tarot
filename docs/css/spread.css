@@ -1,22 +1,83 @@
+/* ── Full-height flex layout ───────────────────────────────────────── */
+html {
+    height: 100%;
+    box-sizing: border-box;
+}
+
 body {
-    width: 97%;
-    height: 97%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    /* dvh = dynamic viewport height — adjusts when iOS address bar shows/hides */
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    /* iOS safe area: avoid notch / home-bar overlap */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    box-sizing: border-box;
     overflow: hidden;
+    overscroll-behavior: none;  /* prevent pull-to-refresh bounce on iOS */
     text-align: center;
-    margin-inline: auto;
-    padding-left: 1.5vw;
-    min-height: 94vh;
-    align-content: center;
+}
+
+/* ── Top controls row ─────────────────────────────────────────────── */
+#upper {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3vw;
+    padding: 1vh 4vw 0.5vh;
+}
+
+.selectBox {
+    flex: 1;
+    min-width: 0;
+    max-width: 44%;
+}
+
+.selectBox select {
+    width: 100%;
+    border-radius: 7px;
+    /* clamp: readable on small iPhone, not giant on iPad */
+    height: clamp(32px, 5vh, 48px);
+    text-align: center;
+    font-size: clamp(11px, 3vw, 17px);
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+/* ── Spread area: fills all remaining vertical space ─────────────── */
+.table-spread {
+    flex: 1 1 0;
+    min-height: 0;          /* allow flex child to shrink below content size */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 .row-spread {
     display: flex;
+    justify-content: center; /* CENTER the cards horizontally */
+    align-items: center;
     gap: 0.5vw;
-    margin-block: 0.5vh;
+    margin-block: 0.25vh;
+    width: 100%;
+    flex-shrink: 0;
 }
 
+/* ── Card containers ──────────────────────────────────────────────── */
 .space {
-    transform: 0.5s;
+    flex-shrink: 0;
+    position: relative;
 }
 
 .card {
@@ -27,58 +88,27 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.selectBox {
-    /* width: 100%; */
-    margin-top: 1vh;
-    margin-bottom: 2vh;
-    min-width: 99%;
-}
-
-#upper {
-    /* max-height: 13vh; */
-}
-
-.selectBox select {
-    width: 90%;
-    /* border: 3px solid rgb(76, 74, 74); */
-    border-radius: 7px;
-    max-height: 4vh;
-    /* padding: 5px 0 4px 0; */
-    text-align: center;
-    font-size: calc(2vh + (20 - 14) * ((100vw - 300px) / (1200 - 300)));
-}
-
-.table-spread {
-    /* max-height: 70vh; */
-    /* min-height: 70vh; */
-    /* height: 70vh; */
-    width: 99vw;
-    text-align: center;
-    margin-block: 1vh;
-    margin-inline: auto;
-}
-
+/* ── Reset button row ─────────────────────────────────────────────── */
 .butR {
+    flex: 0 0 auto;
     text-align: center;
-    margin-inline: auto;
+    padding: 0.5vh 0 1vh;
 }
 
 .butReset {
     cursor: pointer;
     border-radius: 7px;
-    padding: 3px 0 0 0;
-
     text-align: center;
-    margin-inline: auto;
-    padding: 0 10px 0 10px;
-    font-size: calc(3vh + (40 - 28) * ((100vw - 300px) / (1200 - 300)));
-
-    min-height: 5vh;
+    padding: 0 12px;
+    font-size: clamp(14px, 3.5vh, 28px);
+    min-height: max(36px, 5vh);
     max-height: 8vh;
     min-width: 24vw;
-
     touch-action: manipulation;
-    z-index: 99999;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+    appearance: none;
 }

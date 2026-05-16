@@ -236,11 +236,9 @@ function chooseSet(n) {
 
 // [2024-12-07-DA] make spread from [posx, posy]
 function buildSpread(spread) {
-    // [2024-12-08-DA] calculate size and position
     let row_len = spread.length, col_len = spread[0].length;
-    let h = `${(60 / row_len).toFixed(2) - 0.02}vh`, w = `${(99 / col_len).toFixed(2) - 0.02}vw`;
 
-    // [2024-12-08-DA] clear spread
+    // clear spread
     let $spread = document.querySelector(".table-spread");
     $spread.innerHTML = '';
 
@@ -248,25 +246,21 @@ function buildSpread(spread) {
         let row = document.createElement('div');
         row.className = 'row-spread';
         for (let j = 0; j < col_len; j++) {
-            // [2024-12-08-DA] make a card
             let card = document.createElement('div');
             card.className = 'space';
             if (spread[i][j]) {
                 card.className = 'flip space';
                 card.id = `card${i}_${j}`;
                 card.setAttribute("onClick", "flip(this)");
-                // [2024-12-08-DA] back of card
                 let card_back = document.createElement('div');
                 card_back.className = 'card-back';
                 let img = document.createElement('img');
                 img.className = 'card';
                 img.src = `images/${localStorage.getItem("set")}/cardback.png`;
                 card_back.appendChild(img);
-                // [2024-12-08-DA] front of card
                 let card_front = document.createElement('div');
                 card_front.className = 'card-front';
                 card_front.innerHTML = '';
-                // [2024-12-08-DA] add both of them to card
                 card.appendChild(card_back);
                 card.appendChild(card_front);
             }
@@ -275,16 +269,35 @@ function buildSpread(spread) {
         $spread.appendChild(row);
     }
 
-    // [2024-12-08-DA] load set
     chooseSet(localStorage.getItem("set"));
 
-    // [2024-12-08-DA] set size and position
-    let cards = document.querySelectorAll(".space");
-    for (let i = 0, card; (card = cards[i]); i++) {
-        card.style.width = w;
-        card.style.height = h;
-    }
+    // Measure the actual rendered container size and apply pixel dimensions so
+    // cards fill the available area precisely across all screen sizes (desktop,
+    // iPhone portrait/landscape) without relying on hardcoded vh/vw fractions.
+    requestAnimationFrame(function() {
+        let availH = $spread.clientHeight;
+        let availW = $spread.clientWidth;
+        // gap: 0.5vw between columns; margin-block: 0.25vh top+bottom per row
+        let colGapTotal = (col_len - 1) * window.innerWidth  * 0.005;
+        let rowGapTotal =  row_len      * window.innerHeight * 0.005;
+        let cardW = Math.floor((availW - colGapTotal) / col_len);
+        let cardH = Math.floor((availH - rowGapTotal) / row_len);
+        document.querySelectorAll(".space").forEach(function(c) {
+            c.style.width  = cardW + 'px';
+            c.style.height = cardH + 'px';
+        });
+    });
 }
+
+// Re-compute card sizes when viewport changes (orientation flip, iOS address-bar
+// show/hide, etc.).  Debounced to avoid excessive redraws during resize animation.
+window.addEventListener('resize', function() {
+    clearTimeout(window._resizeTimer);
+    window._resizeTimer = setTimeout(function() {
+        let sp = localStorage.getItem('spread');
+        if (sp && spreads[sp]) buildSpread(spreads[sp]);
+    }, 150);
+});
 
 var lib = function (s) { 
     let tmp = s.replaceAll('-', ' ').replaceAll('_', ' ').split(' ');
