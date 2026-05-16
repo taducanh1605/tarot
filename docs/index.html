@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#121111">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href='css/flip.css'>
     <link rel="stylesheet" href='css/spread.css'>
@@ -11,8 +13,6 @@
     <link rel="stylesheet" href='css/rider-waite.css' id="theme">
     <link rel="stylesheet" href='css/darkana.css' id="theme">
 
-    <!-- Bootstrap bundled locally so the app works offline -->
-    <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="icon" href="images/gothic/icon.png" type="image/png">
     <script src="js/spread.js"></script>
 
@@ -43,45 +43,33 @@
 
 <body class="bgr">
 
-    <!-- [2024-12-08-DA] options for set and spread on top -->
-    <div id="upper" class="row">
-        <div class="col-sm-3" style="width: 25vw;"></div>
-        <div class="col-sm-3">
-            <div class="selectBox">
-                <select name="tarotDecks" id="tarotDecks">
-                    <option disabled value="">--Please choose your set--</option>
-                </select>
-            </div>
+    <!-- controls: deck + spread selectors -->
+    <div id="upper">
+        <div class="selectBox">
+            <select name="tarotDecks" id="tarotDecks">
+                <option disabled value="">--Please choose your set--</option>
+            </select>
         </div>
-        <div class="col-sm-3">
-            <div class="selectBox">
-                <select name="spreads" id="spreads">
-                    <option disabled value="">--Please choose your spread--</option>
-                </select>
-            </div>
+        <div class="selectBox">
+            <select name="spreads" id="spreads">
+                <option disabled value="">--Please choose your spread--</option>
+            </select>
         </div>
-        <div class="col-sm-3" style="width: 350px;"></div>
     </div>
 
-    <!-- [2024-12-08-DA] the spread -->
-    <div class="row">
-        <div class="table-spread" id="spread">
-            <div class="row-spread">
-                <div id='card' class="flip space" onClick="flip(this)" style="width: 99vw; height: 70vh;">
-                    <div class="card-back"><img class="card" src="images/gothic/cardback.png"></div>
-                    <div class="card-front"></div>
-                </div>
+    <!-- spread area -->
+    <div class="table-spread" id="spread">
+        <div class="row-spread">
+            <div id='card' class="flip space" onClick="flip(this)">
+                <div class="card-back"><img class="card" src="images/gothic/cardback.png"></div>
+                <div class="card-front"></div>
             </div>
         </div>
     </div>
 
-    <!-- [2024-12-08-DA] reset button -->
-    <div class="row">
-        <div class="col-sm-4"></div>
-        <div class="col-sm-4 butR">
-            <button type="button" class="butReset">RESET</button>
-        </div>
-        <div class="col-sm-4"></div>
+    <!-- reset button -->
+    <div class="butR">
+        <button type="button" class="butReset">RESET</button>
     </div>
 
 </body>
