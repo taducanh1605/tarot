@@ -2,7 +2,7 @@
 // Uses Cache-First strategy for all static assets and images
 // App shell is precached on install; images are cached on first request
 
-var CACHE_NAME = 'tarot-v3';
+var CACHE_NAME = 'tarot-v4';
 
 // App shell files to precache on install.
 // NOTE: Do NOT include './' (root/directory URL) here – on some hosts it
