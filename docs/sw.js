@@ -2,7 +2,7 @@
 // Uses Network-First so online users receive current files and offline users
 // receive the last complete cached version.
 
-var CACHE_NAME = 'tarot-v5';
+var CACHE_NAME = 'tarot-v6';
 var INDEX_URL = new URL('./index.html', self.location.href).href;
 
 // App shell files to precache on install.
