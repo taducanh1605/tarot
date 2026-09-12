@@ -1,8 +1,9 @@
 // Service Worker for Tarot Card App
-// Uses Cache-First strategy for all static assets and images
-// App shell is precached on install; images are cached on first request
+// Uses Network-First so online users receive current files and offline users
+// receive the last complete cached version.
 
-var CACHE_NAME = 'tarot-v4';
+var CACHE_NAME = 'tarot-v5';
+var INDEX_URL = new URL('./index.html', self.location.href).href;
 
 // App shell files to precache on install.
 // NOTE: Do NOT include './' (root/directory URL) here – on some hosts it
@@ -55,39 +56,30 @@ for (var d = 0; d < DECK_NAMES.length; d++) {
 }
 IMAGE_FILES.push('./images/gothic/icon.png');
 
-// Install event: cache app shell files individually (NOT via addAll so one
-// missing file cannot abort the entire install), then cache images in batches.
+function cacheBatch(cache, urls) {
+    return Promise.all(urls.map(function(url) {
+        return cache.add(url);
+    }));
+}
+
+// Install a complete offline version. If any required file cannot be cached,
+// installation fails and the previous working cache remains active.
 self.addEventListener('install', function(event) {
     event.waitUntil(
         caches.open(CACHE_NAME).then(function(cache) {
-            // Cache each app-shell file individually so a single failure does
-            // not roll back everything.  Critical files (index.html, spread.js,
-            // CSS) should always be present; warn on any unexpected miss.
-            var shellPromises = APP_SHELL.map(function(url) {
-                return cache.add(url).catch(function(err) {
-                    console.warn('[SW] Failed to cache app-shell file: ' + url, err);
-                });
-            });
+            var files = APP_SHELL.concat(IMAGE_FILES);
+            var batchSize = 20;
+            var chain = Promise.resolve();
 
-            return Promise.all(shellPromises).then(function() {
-                // Cache images in batches; skip missing files gracefully
-                var batches = [];
-                var batchSize = 20;
-                for (var i = 0; i < IMAGE_FILES.length; i += batchSize) {
-                    batches.push(IMAGE_FILES.slice(i, i + batchSize));
-                }
-                return batches.reduce(function(chain, batch) {
-                    return chain.then(function() {
-                        return Promise.all(
-                            batch.map(function(url) {
-                                return cache.add(url).catch(function(err) {
-                                    console.warn('[SW] Failed to cache image: ' + url, err);
-                                });
-                            })
-                        );
+            for (var i = 0; i < files.length; i += batchSize) {
+                (function(batch) {
+                    chain = chain.then(function() {
+                        return cacheBatch(cache, batch);
                     });
-                }, Promise.resolve());
-            });
+                })(files.slice(i, i + batchSize));
+            }
+
+            return chain;
         }).then(function() {
             return self.skipWaiting();
         })
@@ -112,7 +104,35 @@ self.addEventListener('activate', function(event) {
     );
 });
 
-// Fetch event: Cache-First strategy
+function cacheResponse(request, response) {
+    if (!response || !response.ok || response.type !== 'basic') {
+        return Promise.resolve();
+    }
+
+    return caches.open(CACHE_NAME).then(function(cache) {
+        return cache.put(request, response.clone());
+    });
+}
+
+function networkFirst(request, fallbackUrl) {
+    return fetch(request).then(function(response) {
+        return cacheResponse(request, response).then(function() {
+            return response;
+        });
+    }).catch(function() {
+        return caches.match(request, { ignoreSearch: true }).then(function(cached) {
+            if (cached) return cached;
+            if (fallbackUrl) return caches.match(fallbackUrl, { ignoreSearch: true });
+            return null;
+        }).then(function(cached) {
+            if (cached) return cached;
+            return new Response('', { status: 503, statusText: 'Service Unavailable' });
+        });
+    });
+}
+
+// Prefer the network whenever it is available; use the complete precache when
+// the request fails because the device is offline.
 self.addEventListener('fetch', function(event) {
     if (event.request.method !== 'GET') return;
 
@@ -124,44 +144,11 @@ self.addEventListener('fetch', function(event) {
     // Only handle same-origin requests
     if (url.origin !== self.location.origin) return;
 
-    // For navigation requests serve the cached index.html directly.
-    // This is the key offline-support path: navigating to the app root
-    // while offline must return the cached page, not a network error.
     if (event.request.mode === 'navigate') {
-        event.respondWith(
-            caches.match(new Request('./index.html')).then(function(cached) {
-                if (cached) return cached;
-                // Not cached yet – fetch from network (first visit)
-                return fetch(event.request).catch(function() {
-                    return new Response('<h1>Offline</h1><p>Please visit once while online first.</p>',
-                        { headers: { 'Content-Type': 'text/html' } });
-                });
-            })
-        );
+        event.respondWith(networkFirst(event.request, INDEX_URL));
         return;
     }
 
-    // For all other requests: serve from cache, fall back to network and cache
-    event.respondWith(
-        caches.match(event.request).then(function(cachedResponse) {
-            if (cachedResponse) return cachedResponse;
-
-            return fetch(event.request).then(function(networkResponse) {
-                if (
-                    networkResponse &&
-                    networkResponse.status === 200 &&
-                    networkResponse.type === 'basic'
-                ) {
-                    var responseToCache = networkResponse.clone();
-                    caches.open(CACHE_NAME).then(function(cache) {
-                        cache.put(event.request, responseToCache);
-                    });
-                }
-                return networkResponse;
-            }).catch(function() {
-                return new Response('', { status: 503, statusText: 'Service Unavailable' });
-            });
-        })
-    );
+    event.respondWith(networkFirst(event.request));
 });
 
